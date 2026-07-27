@@ -13,13 +13,21 @@ tags:
 library_name: freyatts
 ---
 
-# FreyaTTS
+# FreyaTTS-small
 
-FreyaTTS is a 183M-parameter Turkish text-to-speech model. It is tokenizer-free at the character level (92 symbols, no phonemizer or G2P) and generates speech with a non-autoregressive conditional flow-matching DiT in the frozen [AudioVAE2](https://huggingface.co/openbmb/VoxCPM2) latent space (25 Hz, 64-dim latents, 16 kHz encode / 48 kHz decode). Output is 48 kHz mono.
+FreyaTTS-small is a 183M-parameter Turkish text-to-speech model, and the open-source member of the FreyaTTS family. It is tokenizer-free at the character level (92 symbols, no phonemizer or G2P) and generates speech with a non-autoregressive conditional flow-matching DiT in the frozen [AudioVAE2](https://huggingface.co/openbmb/VoxCPM2) latent space (25 Hz, 64-dim latents, 16 kHz encode / 48 kHz decode). Output is 48 kHz mono.
 
 - **Repository:** https://github.com/freyavoiceai/FreyaTTS
 - **Eval set:** https://huggingface.co/datasets/freyavoice/freya-tr-eval
 - **License:** Apache-2.0
+
+## The FreyaTTS family
+
+**FreyaTTS-small** (this model) is our compact, Apache-2.0, self-hostable model, released in full — weights, inference code, and training pipeline.
+
+**FreyaTTS-large** is our production model, serving Turkish voice agents at [FreyaVoice](https://app.freyavoice.ai) with higher naturalness and expressivity. It is available commercially rather than as open weights — for access, contact us at **dev@freyavoice.ai**.
+
+The model id `freyavoice/freya-tts` predates this naming and is unchanged; it refers to FreyaTTS-small.
 
 ## Usage
 
@@ -54,11 +62,11 @@ On [Freya-TR-Eval](https://huggingface.co/datasets/freyavoice/freya-tr-eval): **
 
 ## Citation
 
-FreyaTTS is described in our technical report, [arXiv:2607.09530](https://arxiv.org/abs/2607.09530):
+FreyaTTS-small is described in our technical report, [arXiv:2607.09530](https://arxiv.org/abs/2607.09530):
 
 ```bibtex
-@misc{pamuk2026freyattstechnicalreport,
-      title={FreyaTTS Technical Report}, 
+@misc{pamuk2026freyattscompacttokenizerfreeflowmatching,
+      title={FreyaTTS: A Compact Tokenizer-Free Flow-Matching Transformer for Turkish-First Speech Synthesis}, 
       author={Ahmet Erdem Pamuk and Ömer Yentür and Ahmet Tunga Bayrak and Yavuz Alp Sencer Öztürk and Mustafa Yavuz},
       year={2026},
       eprint={2607.09530},

@@ -1,4 +1,4 @@
-<h2 align="center">FreyaTTS: An Efficient 183M Turkish Speech Foundation Model</h2>
+<h2 align="center">FreyaTTS-small: A Compact Tokenizer-Free Flow-Matching Transformer for Turkish-First Speech Synthesis</h2>
 
 <p align="center">
   <a href="https://arxiv.org/abs/2607.09530"><img src="https://img.shields.io/badge/arXiv-2607.09530-b31b1b" alt="arXiv"></a>
@@ -7,9 +7,13 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-green" alt="License"></a>
 </p>
 
-FreyaTTS is a **183M-parameter Turkish text-to-speech model**. It reads Turkish directly at the character level (92 symbols, no phonemizer, no G2P) and generates speech with a **non-autoregressive conditional flow-matching DiT** in the frozen AudioVAE2 latent space (25 Hz, 64-dim latents, 16 kHz encode / 48 kHz decode).
+FreyaTTS-small is a **183M-parameter Turkish text-to-speech model**, and the open-source member of the FreyaTTS family. It reads Turkish directly at the character level (92 symbols, no phonemizer, no G2P) and generates speech with a **non-autoregressive conditional flow-matching DiT** in the frozen AudioVAE2 latent space (25 Hz, 64-dim latents, 16 kHz encode / 48 kHz decode).
 
 The result is a model that runs comfortably where 2B-class TTS models cannot: 1.5 GB of VRAM on a GPU, real time on a laptop CPU, and well under real time on the Apple Neural Engine.
+
+> **The FreyaTTS family.** **FreyaTTS-small** (this repository) is our compact, Apache-2.0, self-hostable model, released in full — weights, inference code, and training pipeline. **FreyaTTS-large** is our production model, serving Turkish voice agents at [FreyaVoice](https://app.freyavoice.ai) with higher naturalness and expressivity; it is available commercially rather than as open weights. For access to FreyaTTS-large, contact us at **dev@freyavoice.ai**.
+>
+> Repository and model identifiers (`freyavoiceai/FreyaTTS`, `freyavoice/freya-tts`) predate this naming and are unchanged — they refer to FreyaTTS-small.
 
 ### Highlights
 
@@ -22,7 +26,7 @@ The result is a model that runs comfortably where 2B-class TTS models cannot: 1.
 
 ### News
 
-- **[2026.07]** FreyaTTS 0.1.0 released: [weights](https://huggingface.co/freyavoice/freya-tts) | [eval set](https://huggingface.co/datasets/freyavoice/freya-tr-eval)
+- **[2026.07]** FreyaTTS-small 0.1.0 released: [weights](https://huggingface.co/freyavoice/freya-tts) | [eval set](https://huggingface.co/datasets/freyavoice/freya-tr-eval)
 
 ---
 
@@ -93,11 +97,11 @@ Evaluated on [Freya-TR-Eval](https://huggingface.co/datasets/freyavoice/freya-tr
 
 | Model | Params | WER ⬇ | CER ⬇ |
 | ----- | ------ | ----- | ----- |
-| **FreyaTTS** | **183M** | **8.0%** | **3.0%** |
+| **FreyaTTS-small** | **183M** | **8.0%** | **3.0%** |
 | XTTS-v2 | 0.5B | 11.1% | - |
 | F5-TTS | 0.3B | 24.3% | - |
 
-FreyaTTS ranks 3rd of 7 among open sub-1B Turkish TTS models on this benchmark, at a fraction of the compute of the models above it.
+FreyaTTS-small ranks 3rd of 7 among open sub-1B Turkish TTS models on this benchmark, at a fraction of the compute of the models above it. FreyaTTS-large is not included here — it is not an open model, and this table compares open sub-1B systems.
 
 ### Speed
 
@@ -132,7 +136,7 @@ python training/sft.py --config training/configs/sft_stage1.yaml
 
 ## License
 
-FreyaTTS weights and code are released under the [Apache-2.0](LICENSE) license.
+FreyaTTS-small weights and code are released under the [Apache-2.0](LICENSE) license. FreyaTTS-large is not covered by this license; contact **dev@freyavoice.ai** for commercial access.
 
 ## Acknowledgments
 
@@ -141,11 +145,11 @@ FreyaTTS weights and code are released under the [Apache-2.0](LICENSE) license.
 
 ## Citation
 
-FreyaTTS is described in our technical report, [arXiv:2607.09530](https://arxiv.org/abs/2607.09530):
+FreyaTTS-small is described in our technical report, [arXiv:2607.09530](https://arxiv.org/abs/2607.09530):
 
 ```bibtex
-@misc{pamuk2026freyattstechnicalreport,
-      title={FreyaTTS Technical Report}, 
+@misc{pamuk2026freyattscompacttokenizerfreeflowmatching,
+      title={FreyaTTS: A Compact Tokenizer-Free Flow-Matching Transformer for Turkish-First Speech Synthesis}, 
       author={Ahmet Erdem Pamuk and Ömer Yentür and Ahmet Tunga Bayrak and Yavuz Alp Sencer Öztürk and Mustafa Yavuz},
       year={2026},
       eprint={2607.09530},
