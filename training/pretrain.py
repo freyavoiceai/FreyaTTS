@@ -242,9 +242,12 @@ def main():
                                os.path.join(ckpt, "model.pt"), model_cfg)
                     print(f"[ckpt] {ckpt}", flush=True)
 
+    # save_state() must run on every process so each process can save
+    # its own accelerator state, including RNG state.
+    ckpt = os.path.join(args.out, "final")
+    accelerator.save_state(ckpt)
+
     if accelerator.is_main_process:
-        ckpt = os.path.join(args.out, "final")
-        accelerator.save_state(ckpt)
         with open(os.path.join(ckpt, "step.txt"), "w") as f:
             f.write(str(step))
         save_model(accelerator.unwrap_model(model), os.path.join(ckpt, "model.pt"), model_cfg)
