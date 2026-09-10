@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+from datetime import date
 
 import numpy as np
 import torch
@@ -43,6 +44,8 @@ BRAND = {
 _UNITS = ["", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"]
 _TENS = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"]
 _SCALES = [(10 ** 9, "milyar"), (10 ** 6, "milyon"), (10 ** 3, "bin")]
+_MONTHS = ["", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+           "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
 
 
 def spell_number(n):
@@ -80,10 +83,19 @@ def expand_digits(text):
     part of the input contract. Clock times read as hour then minute, long
     account-style strings digit by digit, everything else as an integer.
     Multi-digit strings with a leading zero are read digit by digit as well,
-    so the zeros are not lost.
+    so the zeros are not lost. Valid DD.MM.YYYY dates read as day, month
+    name, year; anything else date-shaped keeps the integer reading.
     """
     def spoken(match):
         s = match.group(0)
+        if re.fullmatch(r"\d{1,2}\.\d{1,2}\.\d{4}", s):
+            day, month, year = map(int, s.split("."))
+            try:
+                date(year, month, day)
+            except ValueError:
+                pass
+            else:
+                return f"{spell_number(day)} {_MONTHS[month]} {spell_number(year)}"
         if ":" in s:
             hour, minute = s.split(":")
             out = spell_number(int(hour))

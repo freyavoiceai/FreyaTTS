@@ -1,6 +1,6 @@
 import unittest
 
-from freyatts.pipeline import normalize
+from freyatts.pipeline import normalize, spell_number
 
 
 class NormalizationTests(unittest.TestCase):
@@ -32,6 +32,24 @@ class NormalizationTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(normalize(text), expected)
 
+    def test_dates(self):
+        cases = {
+            "Randevunuz 12.03.2026 tarihinde.":
+                "Randevunuz on iki Mart iki bin yirmi altı tarihinde.",
+            "01.03.2026": "bir Mart iki bin yirmi altı",
+            "1.2.2026": "bir Şubat iki bin yirmi altı",
+            "29.02.2024": "yirmi dokuz Şubat iki bin yirmi dört",
+            "31.12.2026": "otuz bir Aralık iki bin yirmi altı",
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(normalize(text), expected)
+
+    def test_invalid_dates_keep_the_integer_reading(self):
+        for text in ["29.02.2025", "31.04.2026", "00.03.2026", "12.13.2026"]:
+            with self.subTest(text=text):
+                self.assertEqual(normalize(text), spell_number(int(text.replace(".", ""))))
+
     def test_existing_number_rules(self):
         cases = {
             "0": "sıfır",
@@ -40,6 +58,7 @@ class NormalizationTests(unittest.TestCase):
             "99999": "doksan dokuz bin dokuz yüz doksan dokuz",
             "123456": "bir iki üç dört beş altı",
             "1.250": "bin iki yüz elli",
+            "1.234.567": "bir milyon iki yüz otuz dört bin beş yüz altmış yedi",
             "08:05": "sekiz beş",
             "08:00": "sekiz",
         }
