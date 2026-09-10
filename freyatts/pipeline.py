@@ -84,7 +84,9 @@ def expand_digits(text):
     account-style strings digit by digit, everything else as an integer.
     Multi-digit strings with a leading zero are read digit by digit as well,
     so the zeros are not lost. Valid DD.MM.YYYY dates read as day, month
-    name, year; anything else date-shaped keeps the integer reading.
+    name, year; anything else date-shaped keeps the integer reading. TL/₺
+    amounts with up to two decimals read as lira and kuruş, dropping a zero
+    kuruş part.
     """
     def spoken(match):
         s = match.group(0)
@@ -106,6 +108,22 @@ def expand_digits(text):
             return " ".join(spell_number(int(ch)) for ch in s)
         return spell_number(int(s.replace(".", "")))
 
+    def lira(match):
+        whole, _, fraction = match.group("amount").partition(",")
+        liras = int(whole.replace(".", ""))
+        kurus = int(fraction.ljust(2, "0")) if fraction else 0
+        words = []
+        if liras or not kurus:
+            words.append(spell_number(liras) + " lira")
+        if kurus:
+            words.append(spell_number(kurus) + " kuruş")
+        return " ".join(words)
+
+    # Suffixed amounts ("100 TL'ye") are left alone: the suffix harmonizes
+    # with "TL", not "lira".
+    amount = r"(?P<amount>(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{1,2})?)"
+    text = re.sub(rf"(?<![\w.,]){amount}\s*(?:TL\b|₺)(?!['’])", lira, text, flags=re.IGNORECASE)
+    text = re.sub(rf"₺\s*{amount}(?![\d,'’]|\.\d)", lira, text)
     return re.sub(r"\d+:\d+|\d+(?:\.\d+)*", spoken, text)
 
 

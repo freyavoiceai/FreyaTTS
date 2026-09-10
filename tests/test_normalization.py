@@ -50,6 +50,23 @@ class NormalizationTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(normalize(text), spell_number(int(text.replace(".", ""))))
 
+    def test_lira_amounts(self):
+        cases = {
+            "Tutar 10,00 TL.": "Tutar on lira.",
+            "12.450,75 TL": "on iki bin dört yüz elli lira yetmiş beş kuruş",
+            "Borcunuz 1.250,00 ₺": "Borcunuz bin iki yüz elli lira",
+            "₺1.250,05": "bin iki yüz elli lira beş kuruş",
+            "3,5 TL": "üç lira elli kuruş",
+            "0,05 TL": "beş kuruş",
+            "250000 TL": "iki yüz elli bin lira",
+            "10tl": "on lira",
+            "10 TLX": "on TLX",
+            "100 TL'ye kadar": "yüz TL'ye kadar",
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(normalize(text), expected)
+
     def test_existing_number_rules(self):
         cases = {
             "0": "sıfır",
