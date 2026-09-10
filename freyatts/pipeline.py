@@ -79,6 +79,8 @@ def expand_digits(text):
     left as digits come out truncated. Spelling them out before synthesis is
     part of the input contract. Clock times read as hour then minute, long
     account-style strings digit by digit, everything else as an integer.
+    Multi-digit strings with a leading zero are read digit by digit as well,
+    so the zeros are not lost.
     """
     def spoken(match):
         s = match.group(0)
@@ -88,7 +90,7 @@ def expand_digits(text):
             if int(minute):
                 out += " " + spell_number(int(minute))
             return out
-        if len(s) >= 6 and "." not in s:
+        if "." not in s and (len(s) >= 6 or (len(s) > 1 and s[0] == "0")):
             return " ".join(spell_number(int(ch)) for ch in s)
         return spell_number(int(s.replace(".", "")))
 
