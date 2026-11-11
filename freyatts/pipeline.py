@@ -77,22 +77,35 @@ def expand_digits(text):
     A digit string is orthographically short but phonetically long, and the
     duration head sizes the utterance from the character sequence, so numbers
     left as digits come out truncated. Spelling them out before synthesis is
-    part of the input contract. Clock times read as hour then minute, long
-    account-style strings digit by digit, everything else as an integer.
+    part of the input contract. Clock times read as hour then minute, decimals
+    with "virgül", a leading "%" as "yüzde", long account-style strings digit
+    by digit, everything else as an integer.
     """
+    def fraction(digits):
+        # "05" is read "sıfır beş", not "beş"
+        rest = digits.lstrip("0")
+        words = ["sıfır"] * (len(digits) - len(rest))
+        if rest:
+            words.append(spell_number(int(rest)))
+        return " ".join(words)
+
     def spoken(match):
         s = match.group(0)
         if ":" in s:
             hour, minute = s.split(":")
             out = spell_number(int(hour))
             if int(minute):
-                out += " " + spell_number(int(minute))
+                out += " " + fraction(minute)
             return out
+        if "," in s:
+            whole, frac = s.split(",")
+            return spell_number(int(whole.replace(".", ""))) + " virgül " + fraction(frac)
         if len(s) >= 6 and "." not in s:
             return " ".join(spell_number(int(ch)) for ch in s)
         return spell_number(int(s.replace(".", "")))
 
-    return re.sub(r"\d+:\d+|\d+(?:\.\d+)*", spoken, text)
+    text = re.sub(r"%\s?(?=\d)", "yüzde ", text)
+    return re.sub(r"\d+:\d+|\d+(?:\.\d+)*(?:,\d+)?", spoken, text)
 
 
 def normalize(text):
